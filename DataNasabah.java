@@ -92,10 +92,18 @@ public class DataNasabah {
         int i = 1;
         for (JenisTabungan jenist : JenisTabungan.values()) {
             System.out.println(i + ": " + jenist);
-            i = i+1;
+            i = i + 1;
         }
         System.out.println("Input: ");
         int pilihan = scanner.nextInt();
         return pilihan;
+    }
+
+    public void showDataNasabah() {
+        System.out.println("----- Data Nasabah -----");
+        System.out.println("Nama \t\t: " + getNamaNasabah());
+        System.out.println("No Rekening \t: " + getNoRekNasabah());
+        System.out.println("Jenis Tabungan \t: " + getJenisTabungan());
+        System.out.println("Saldo \t\t: " + getSaldoNasabah());
     }
 }

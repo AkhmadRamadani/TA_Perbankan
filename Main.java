@@ -136,6 +136,7 @@ public class Main {
             System.out.println("2. Setor Saldo");
             System.out.println("3. Ambil Saldo");
             System.out.println("4. Cek Saldo");
+            System.out.println("5. Lihat Data Akun");
             System.out.println("Input lainnya untuk keluar");
 
             int pilihan = scanner.nextInt();
@@ -152,7 +153,9 @@ public class Main {
                 case 4:
                     System.out.println("Saldo saat ini: " + currentDataNasabah.getSaldoNasabah());
                     break;
-
+                case 5:
+                    currentDataNasabah.showDataNasabah();
+                    break;
                 default:
                     exitMenu = true;
                     break;
@@ -166,6 +169,7 @@ public class Main {
             System.out.println("----- Pilih menu -----");
             System.out.println("1. Setor Saldo");
             System.out.println("2. Cek Saldo");
+            System.out.println("3. Lihat Data Akun");
             System.out.println("Input lainnya untuk keluar");
             int pilihan = scanner.nextInt();
             switch (pilihan) {
@@ -175,7 +179,9 @@ public class Main {
                 case 2:
                     System.out.println("Saldo saat ini: " + currentDataNasabah.getSaldoNasabah());
                     break;
-
+                case 3:
+                    currentDataNasabah.showDataNasabah();
+                    break;
                 default:
                     exitMenu = true;
                     break;
