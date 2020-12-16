@@ -1,35 +1,30 @@
-import java.util.Scanner;
 
 public class HistorySetor {
-    private int nominal;
     private String tanggal;
-
-    public int getNominal() {
-        return nominal;
-    }
+    private double nominal;
 
     public String getTanggal() {
         return tanggal;
+    }
+
+    public double getNominal() {
+        return nominal;
+    }
+
+    public void setNominal(double nominal) {
+        this.nominal = nominal;
     }
 
     public void setTanggal(String tanggal) {
         this.tanggal = tanggal;
     }
 
-    public void setNominal(int nominal) {
-        this.nominal = nominal;
-    }
-
-    public int menuSetor(Scanner scanner) {
-        int menu = 1;
-        System.out.println("----- Pilih Menu -----\n");
-        System.out.println("1. Setor");
-        System.out.println("2. Lihat History Setor");
-        System.out.println("Inputkan lainnya untuk keluar");
-
-        System.out.print("Pilih menu: ");
-        menu = scanner.nextInt();
-        // scanner.close();
-        return menu;
+    public void tampilSetor(HistorySetor[] hSetor) {
+        System.out.println("No. \t Tanggal \t Nominal");
+        int i = 0;
+        for (HistorySetor hSetor2 : hSetor) {
+            i = i + 1;
+            System.out.println((i) + "\t" + hSetor2.getTanggal() + " \t " + hSetor2.getNominal());
+        }
     }
 }

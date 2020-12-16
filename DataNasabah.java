@@ -1,112 +1,101 @@
-import java.util.*;
+import java.util.Scanner;
 
 public class DataNasabah {
-    private String nama;
-    private String alamat;
-    private Tabungan jenisTabungan;
-    private int pin;
-    private int nomorRekening;
-    private double saldo;
-    private ArrayList<Transfer> dTransfers;
-    private ArrayList<HistorySetor> historySetors;
-    private ArrayList<HistoryAmbil> historyAmbils;
+    private String namaNasabah;
+    private int noRekNasabah;
+    private int pinNasabah;
+    private JenisTabungan jenisTabungan;
+    private double saldoNasabah;
+    private HistoryTransfer historyTransfer[];
+    private HistorySetor historySetor[];
+    private HistoryAmbil historyAmbil[];
 
-    public String getNama() {
-        return nama;
+    public String getNamaNasabah() {
+        return namaNasabah;
     }
 
-    public int getNomorRekening() {
-        return nomorRekening;
+    public HistoryAmbil[] getHistoryAmbil() {
+        return historyAmbil;
     }
 
-    public void setNomorRekening(int nomorRekening) {
-        this.nomorRekening = nomorRekening;
+    public void setHistoryAmbil(HistoryAmbil historyAmbil[]) {
+        this.historyAmbil = historyAmbil;
     }
 
-    public int getPin() {
-        return pin;
+    public HistorySetor[] getHistorySetor() {
+        return historySetor;
     }
 
-    public void setPin(int pin) {
-        this.pin = pin;
+    public void setHistorySetor(HistorySetor historySetor[]) {
+        this.historySetor = historySetor;
     }
 
-    public ArrayList<HistoryAmbil> getHistoryAmbils() {
-        return historyAmbils;
+    public HistoryTransfer[] getHistoryTransfer() {
+        return historyTransfer;
     }
 
-    public void setHistoryAmbils(ArrayList<HistoryAmbil> historyAmbils) {
-        this.historyAmbils = historyAmbils;
+    public void setHistoryTransfer(HistoryTransfer historyTransfer[]) {
+        this.historyTransfer = historyTransfer;
     }
 
-    public ArrayList<HistorySetor> getHistorySetors() {
-        return historySetors;
+    public double getSaldoNasabah() {
+        return saldoNasabah;
     }
 
-    public void setHistorySetors(ArrayList<HistorySetor> historySetors) {
-        this.historySetors = historySetors;
+    public void setSaldoNasabah(double saldoNasabah) {
+        this.saldoNasabah = saldoNasabah;
     }
 
-    public void setNama(String nama) {
-        this.nama = nama;
-    }
-
-    public double getSaldo() {
-        return saldo;
-    }
-
-    public void setSaldo(double saldo) {
-        this.saldo = saldo;
-    }
-
-    public Tabungan getJenisTabungan() {
+    public JenisTabungan getJenisTabungan() {
         return jenisTabungan;
     }
 
-    public void setJenisTabungan(Tabungan jenisTabungan) {
+    public void setJenisTabungan(JenisTabungan jenisTabungan) {
         this.jenisTabungan = jenisTabungan;
     }
 
-    public String getAlamat() {
-        return alamat;
+    public int getPinNasabah() {
+        return pinNasabah;
     }
 
-    public void setAlamat(String alamat) {
-        this.alamat = alamat;
-    }
-    
-    public ArrayList<Transfer> getdTransfers() {
-        return dTransfers;
+    public void setPinNasabah(int pinNasabah) {
+        this.pinNasabah = pinNasabah;
     }
 
-    public void setdTransfers(ArrayList<Transfer> dTransfers) {
-        this.dTransfers = dTransfers;
+    public int getNoRekNasabah() {
+        return noRekNasabah;
     }
 
-    
-
-    public DataNasabah(){
-
+    public void setNoRekNasabah(int noRekNasabah) {
+        this.noRekNasabah = noRekNasabah;
     }
 
-    public DataNasabah(String nama, String alamat, Tabungan jenisTabungan, int pin, int nomorRekening, double saldo,
-            ArrayList<Transfer> dTransfers, ArrayList<HistorySetor> historySetors,
-            ArrayList<HistoryAmbil> historyAmbils) {
-        this.nama = nama;
-        this.alamat = alamat;
+    public void setNamaNasabah(String namaNasabah) {
+        this.namaNasabah = namaNasabah;
+    }
+
+    public void setDataNasabah(String namaNasabah, int noRekNasabah, int pinNasabah, JenisTabungan jenisTabungan,
+            double saldoNasabah, HistoryTransfer[] historyTransfer, HistorySetor[] historySetor,
+            HistoryAmbil[] historyAmbil) {
+        this.namaNasabah = namaNasabah;
+        this.noRekNasabah = noRekNasabah;
+        this.pinNasabah = pinNasabah;
         this.jenisTabungan = jenisTabungan;
-        this.pin = pin;
-        this.nomorRekening = nomorRekening;
-        this.saldo = saldo;
-        this.dTransfers = dTransfers;
-        this.historySetors = historySetors;
-        this.historyAmbils = historyAmbils;
+        this.saldoNasabah = saldoNasabah;
+        this.historyTransfer = historyTransfer;
+        this.historySetor = historySetor;
+        this.historyAmbil = historyAmbil;
     }
-    
-    public void getDataNasabah(){
-        System.out.println("Nama\t: "+getNama());
-        System.out.println("Alamat\t: "+getAlamat());
-        System.out.println("Bank\t: "+getJenisTabungan().getJenisTabungan());
-        // System.out.println(""getJenisTabungan().getBunga());
+
+    public int pilihJenisTabungan(Scanner scanner) {
+        System.out.println("----- Pilih Jenis Tabungan -----");
+        int i = 1;
+        for (JenisTabungan jenist : JenisTabungan.values()) {
+            System.out.println(i + ": " + jenist);
+            i = i+1;
+        }
+        System.out.println("Input: ");
+        int pilihan = scanner.nextInt();
+        return pilihan;
     }
 }

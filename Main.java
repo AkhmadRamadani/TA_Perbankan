@@ -3,11 +3,55 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class Main {
-    static ArrayList<DataNasabah> userList = new ArrayList<DataNasabah>();
+    static DataNasabah dataNasabah[] = new DataNasabah[2];
+    static HistoryAmbil initialHistoryAmbil[] = new HistoryAmbil[2];
+    static HistoryTransfer initialHistoryTransfer[] = new HistoryTransfer[2];
+    static HistorySetor initialHistorySetor[] = new HistorySetor[2];
+
     static DataNasabah currentDataNasabah = new DataNasabah();
+    static HistoryTransfer historyTransfer = new HistoryTransfer();
+    static HistoryAmbil historyAmbil = new HistoryAmbil();
+    static HistorySetor historySetor = new HistorySetor();
+
     static Scanner scanner = new Scanner(System.in);
-    static Transfer transfer = new Transfer();
-    static HistorySetor setor = new HistorySetor();
+
+    static void initializeArray() {
+        for (int i = 0; i < dataNasabah.length; i++) {
+            dataNasabah[i] = new DataNasabah();
+        }
+        for (int i = 0; i < initialHistoryAmbil.length; i++) {
+            initialHistoryAmbil[i] = new HistoryAmbil();
+        }
+        for (int i = 0; i < initialHistorySetor.length; i++) {
+            initialHistorySetor[i] = new HistorySetor();
+        }
+        for (int i = 0; i < initialHistoryTransfer.length; i++) {
+            initialHistoryTransfer[i] = new HistoryTransfer();
+        }
+    }
+
+    static void initialSetup() {
+        dataNasabah[0].setNamaNasabah("Akhmad Ramadani");
+        dataNasabah[0].setNoRekNasabah(123456);
+        dataNasabah[0].setPinNasabah(123456);
+        dataNasabah[0].setJenisTabungan(JenisTabungan.KONVENSIONAL);
+        dataNasabah[0].setSaldoNasabah(1000000);
+
+        initialHistoryAmbil[0].setTanggal("10/06/2020");
+        initialHistoryAmbil[0].setNominal(50000);
+
+        initialHistoryTransfer[0].setTanggal("10/06/2020");
+        initialHistoryTransfer[0].setNominal(50000);
+        initialHistoryTransfer[0].setCatatan("Buat beli bakwan");
+        initialHistoryTransfer[0].setNoRekTujuan(123321);
+
+        initialHistorySetor[0].setTanggal("20/06/2020");
+        initialHistorySetor[0].setNominal(100000);
+
+        dataNasabah[0].setHistoryAmbil(initialHistoryAmbil);
+        dataNasabah[0].setHistorySetor(initialHistorySetor);
+        dataNasabah[0].setHistoryTransfer(initialHistoryTransfer);
+    }
 
     private static DataNasabah loginFunction() {
         System.out.print("Masukkan nomor rekening: ");
@@ -16,11 +60,12 @@ public class Main {
         System.out.print("Masukkan pin: ");
         int loginPin = scanner.nextInt();
 
-        for (DataNasabah login : userList) {
-            if (login.getPin() == loginPin && login.getNomorRekening() == loginNoRek) {
-                DataNasabah dataLoginNasabah = new DataNasabah(login.getNama(), login.getAlamat(),
-                        login.getJenisTabungan(), login.getNomorRekening(), login.getPin(), login.getSaldo(),
-                        login.getdTransfers(), login.getHistorySetors(), login.getHistoryAmbils());
+        for (DataNasabah login : dataNasabah) {
+            if (login.getPinNasabah() == loginPin && login.getNoRekNasabah() == loginNoRek) {
+                DataNasabah dataLoginNasabah = new DataNasabah();
+                dataLoginNasabah.setDataNasabah(login.getNamaNasabah(), login.getNoRekNasabah(), login.getPinNasabah(),
+                        login.getJenisTabungan(), login.getSaldoNasabah(), login.getHistoryTransfer(),
+                        login.getHistorySetor(), login.getHistoryAmbil());
 
                 currentDataNasabah = dataLoginNasabah;
                 return currentDataNasabah;
@@ -30,210 +75,306 @@ public class Main {
         return null;
     }
 
-    private static void registerNasabah() {
-        Tabungan jenisTabungan = new Tabungan();
-
+    static void registerFunction() {
         System.out.println("--------Pendaftaran Rekening Baru--------\n");
         scanner.nextLine();
 
         System.out.print("Masukkan Nama Anda: ");
         String nama = scanner.nextLine();
-        System.out.print("Masukkan Alamat Anda: ");
-        String alamat = scanner.nextLine();
+        boolean inputanBenar = false;
+        JenisTabungan jTabungan = null;
 
-        jenisTabungan.pilihJenisTabungan(scanner);
+        do {
+            int pilihan = dataNasabah[1].pilihJenisTabungan(scanner);
+            if (pilihan == 1) {
+                jTabungan = JenisTabungan.KONVENSIONAL;
+                inputanBenar = true;
+            } else if (pilihan == 2) {
+                jTabungan = JenisTabungan.GIRO;
+                inputanBenar = true;
+            } else if (pilihan == 3) {
+                jTabungan = JenisTabungan.DEPOSITO;
+                inputanBenar = true;
+            } else {
+                System.out.println("Inputan salah!!!");
+            }
+        } while (!inputanBenar);
 
         System.out.print("Inputkan No Rekening baru: ");
         int nomorRekening = scanner.nextInt();
         System.out.print("Inputkan pin baru: ");
         int pin = scanner.nextInt();
 
-        DataNasabah newDataNasabah = new DataNasabah(nama, alamat, jenisTabungan, pin, nomorRekening, 0, null, null,
-                null);
-
-        userList.add(newDataNasabah);
+        dataNasabah[1].setDataNasabah(nama, nomorRekening, pin, jTabungan, 0, null, null, null);
     }
 
-    static void tampilUser() {
-        for (DataNasabah dataNasabah : userList) {
-            dataNasabah.getDataNasabah();
-        }
-    }
-
-    static void pilihMenuAwal() {
-        System.out.println("------Selamat Datang------\n");
-        System.out.println("Pilih menu!!!");
+    static int initialMenu() {
+        System.out.println("----- Pilih Menu -----");
         System.out.println("1. Login");
-        System.out.println("2. Register");
+        System.out.println("2. Register\n");
+        System.out.println("Input lainnya untuk keluar");
+
+        System.out.print("Input: ");
+        int pilihan = scanner.nextInt();
+        return pilihan;
     }
 
-    static void pilihMenuLanjutan(String jenisTabungan) {
-        System.out.println("-----Menu-----\n");
-        if (jenisTabungan.equals("Konvensional")) {
-
-            System.out.println("1. Transfer");
-            System.out.println("2. Ambil Saldo");
-            System.out.println("3. Setor");
-            System.out.println("4. Cek saldo");
-            System.out.println("5. Keluar");
-        } else if (jenisTabungan.equals("Giro")) {
-
-            System.out.println("1. Setor");
-            System.out.println("2. Cek saldo");
-            System.out.println("3. Keluar");
-        } else if (jenisTabungan.equals("Deposito")) {
-            System.out.println("1. Setor");
-            System.out.println("2. Cek saldo");
-            System.out.println("3. Keluar");
+    static void menuAfterLogin() {
+        if (currentDataNasabah.getJenisTabungan() == JenisTabungan.KONVENSIONAL) {
+            menuKonvensional();
+        } else {
+            nonKonvensional();
         }
+        // return 1;
     }
 
-    static void menuSetelahLogin() {
-        System.out.println("\nSelamat Datang: " + currentDataNasabah.getNama() + "\n");
-
-        boolean keluar = false;
+    static void menuKonvensional() {
+        boolean exitMenu = false;
         do {
-            pilihMenuLanjutan(currentDataNasabah.getJenisTabungan().getJenisTabungan());
-            System.out.print("Pilih menu: ");
-            int menuLanjutan = scanner.nextInt();
+            System.out.println("----- Pilih menu -----");
+            System.out.println("1. Transfer");
+            System.out.println("2. Setor Saldo");
+            System.out.println("3. Ambil Saldo");
+            System.out.println("4. Cek Saldo");
+            System.out.println("Input lainnya untuk keluar");
 
-            switch (menuLanjutan) {
+            int pilihan = scanner.nextInt();
+            switch (pilihan) {
                 case 1:
-                    if (currentDataNasabah.getJenisTabungan().getJenisTabungan().equals("Konvensional")) {
-                        int menuTransfer = transfer.menuTransfer(scanner);
-                        switch (menuTransfer) {
-                            case 1:
-                                transferUang();
-                                break;
-                            case 2:
-                                System.out.println("History");
-                                break;
-
-                            default:
-                                break;
-                        }
-                        break;
-                    } else if (currentDataNasabah.getJenisTabungan().getJenisTabungan().equals("Giro")
-                            || currentDataNasabah.getJenisTabungan().getJenisTabungan().equals("Deposito")) {
-
-                        int menuSetor = setor.menuSetor(scanner);
-                        switch (menuSetor) {
-                            case 1:
-                                System.out.println("Setor");
-                                break;
-                            case 2:
-                                System.out.println("History");
-                                break;
-
-                            default:
-                                break;
-                        }
-                        break;
-                    }
-
+                    menuTransfer();
                     break;
                 case 2:
-                    if (currentDataNasabah.getJenisTabungan().getJenisTabungan().equals("Konvensional")) {
-                        System.out.println("Ambil saldo");
-                        break;
-                    } else if (currentDataNasabah.getJenisTabungan().getJenisTabungan().equals("Giro")
-                            || currentDataNasabah.getJenisTabungan().getJenisTabungan().equals("Deposito")) {
-                        keluar = true;
-
-                        break;
-                    }
-
+                    menuSetor();
                     break;
                 case 3:
-                    if (currentDataNasabah.getJenisTabungan().getJenisTabungan().equals("Konvensional")) {
-                        System.out.println("Setor saldo");
-                        break;
-                    } else if (currentDataNasabah.getJenisTabungan().getJenisTabungan().equals("Giro")
-                            || currentDataNasabah.getJenisTabungan().getJenisTabungan().equals("Deposito")) {
-                        System.out.println("Saldo");
-                        System.out.println(currentDataNasabah.getSaldo());
-                        break;
-                    }
-
+                    menuAmbil();
                     break;
                 case 4:
-                    if (currentDataNasabah.getJenisTabungan().getJenisTabungan().equals("Konvensional")) {
-                        System.out.println("Saldo");
-                        System.out.println(currentDataNasabah.getSaldo());
-                        break;
-                    } else if (currentDataNasabah.getJenisTabungan().getJenisTabungan().equals("Giro")
-                            || currentDataNasabah.getJenisTabungan().getJenisTabungan().equals("Deposito")) {
-                        keluar = true;
-
-                        break;
-                    }
-
+                    System.out.println("Saldo saat ini: " + currentDataNasabah.getSaldoNasabah());
                     break;
+
                 default:
-                    keluar = true;
+                    exitMenu = true;
                     break;
             }
-        } while (!keluar);
+        } while (!exitMenu);
     }
 
-    static void transferUang() {
-        Transfer newTransfer = new Transfer();
+    static void nonKonvensional() {
+        boolean exitMenu = false;
+        do {
+            System.out.println("----- Pilih menu -----");
+            System.out.println("1. Setor Saldo");
+            System.out.println("2. Cek Saldo");
+            System.out.println("Input lainnya untuk keluar");
+            int pilihan = scanner.nextInt();
+            switch (pilihan) {
+                case 1:
+                    menuSetor();
+                    break;
+                case 2:
+                    System.out.println("Saldo saat ini: " + currentDataNasabah.getSaldoNasabah());
+                    break;
+
+                default:
+                    exitMenu = true;
+                    break;
+            }
+        } while (!exitMenu);
+    }
+
+    static void menuTransfer() {
+        boolean exitMenu = false;
+        do {
+            System.out.println("----- Pilih Menu -----");
+            System.out.println("1. Transfer");
+            System.out.println("2. Lihat History Transfer");
+            System.out.println("Input lainnya untuk keluar");
+            System.out.print("Input: ");
+            int pilihan = scanner.nextInt();
+            switch (pilihan) {
+                case 1:
+                    transferFunction();
+                    break;
+                case 2:
+                    historyTransfer.tampilHistory(currentDataNasabah.getHistoryTransfer());
+                    break;
+                default:
+                    exitMenu = true;
+                    break;
+            }
+        } while (!exitMenu);
+    }
+
+    static void menuAmbil() {
+        boolean exitMenu = false;
+        do {
+            System.out.println("----- Pilih Menu -----");
+            System.out.println("1. Ambil");
+            System.out.println("2. Lihat History Ambil");
+            System.out.println("Input lainnya untuk keluar");
+            System.out.print("Input: ");
+            int pilihan = scanner.nextInt();
+            switch (pilihan) {
+                case 1:
+                    ambilFunction();
+                    break;
+                case 2:
+                    historyAmbil.tampilAmbil(currentDataNasabah.getHistoryAmbil());
+                    break;
+                default:
+                    exitMenu = true;
+                    break;
+            }
+        } while (!exitMenu);
+    }
+
+    static void menuSetor() {
+        boolean exitMenu = false;
+        do {
+            System.out.println("----- Pilih Menu -----");
+            System.out.println("1. Setor");
+            System.out.println("2. Lihat History Setoran");
+            System.out.println("Input lainnya untuk keluar");
+            System.out.print("Input: ");
+            int pilihan = scanner.nextInt();
+            switch (pilihan) {
+                case 1:
+                    setorFunction();
+                    break;
+                case 2:
+                    historySetor.tampilSetor(currentDataNasabah.getHistorySetor());
+                    break;
+                default:
+                    exitMenu = true;
+                    break;
+            }
+        } while (!exitMenu);
+    }
+
+    static void transferFunction() {
+        System.out.println("----- Transfer -----");
+        System.out.print("Masukkan no rekening tujuan: ");
+        int noRekTujuan = scanner.nextInt();
+        System.out.print("Masukkan nominal: ");
+        double nominal = scanner.nextDouble();
         scanner.nextLine();
-
-        System.out.print("Masukkan no rek tujuan: ");
-        newTransfer.setNoRekening(scanner.nextLine());
-
-        System.out.print("Masukkan jml uang: ");
-        int nominal = scanner.nextInt();
-        newTransfer.setNominal(nominal);
-
         System.out.print("Masukkan catatan: ");
-        newTransfer.setCatatan(scanner.nextLine());
+        String catatan = scanner.nextLine();
 
-        String tglSekarang = "";
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         LocalDateTime now = LocalDateTime.now();
-        tglSekarang = dtf.format(now).toString();
+        String tglSekarang = dtf.format(now).toString();
 
-        newTransfer.setTanggal(tglSekarang);
+        HistoryTransfer transfer[] = new HistoryTransfer[2];
+        if (currentDataNasabah.getHistoryTransfer() != null) {
+            if (currentDataNasabah.getHistoryTransfer()[0] == null) {
+                transfer[0] = new HistoryTransfer();
+                transfer[0].setNoRekTujuan(noRekTujuan);
+                transfer[0].setNominal(nominal);
+                transfer[0].setTanggal(tglSekarang);
+                transfer[0].setCatatan(catatan);
+            } else {
+                transfer[0] = new HistoryTransfer();
+                transfer[0] = currentDataNasabah.getHistoryTransfer()[0];
+                transfer[1] = new HistoryTransfer();
+                transfer[1].setNoRekTujuan(noRekTujuan);
+                transfer[1].setNominal(nominal);
+                transfer[1].setTanggal(tglSekarang);
+                transfer[1].setCatatan(catatan);
+            }
+        } else {
+            transfer[0] = new HistoryTransfer();
+            transfer[0].setNoRekTujuan(noRekTujuan);
+            transfer[0].setNominal(nominal);
+            transfer[0].setTanggal(tglSekarang);
+            transfer[0].setCatatan(catatan);
+            transfer[1] = new HistoryTransfer();
 
-        ArrayList<Transfer> dTransfers = new ArrayList<Transfer>();
-        dTransfers.add(newTransfer);
-        currentDataNasabah.setdTransfers(dTransfers);
-        double saldo = (currentDataNasabah.getSaldo() - nominal);
-        currentDataNasabah.setSaldo(saldo);
+        }
+
+        currentDataNasabah.setHistoryTransfer(transfer);
+        double saldoBaru = currentDataNasabah.getSaldoNasabah() - nominal;
+        currentDataNasabah.setSaldoNasabah(saldoBaru);
+    }
+
+    static void setorFunction() {
+        System.out.println("----- Setor -----");
+        System.out.print("Masukkan nominal: ");
+        double nominal = scanner.nextDouble();
+
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        LocalDateTime now = LocalDateTime.now();
+        String tglSekarang = dtf.format(now).toString();
+
+        HistorySetor Setor[] = new HistorySetor[2];
+        if (currentDataNasabah.getHistorySetor() != null) {
+            if (currentDataNasabah.getHistorySetor()[0] == null) {
+                Setor[0] = new HistorySetor();
+                Setor[0].setNominal(nominal);
+                Setor[0].setTanggal(tglSekarang);
+            } else {
+                Setor[0] = new HistorySetor();
+                Setor[0] = currentDataNasabah.getHistorySetor()[0];
+                Setor[1] = new HistorySetor();
+                Setor[1].setNominal(nominal);
+                Setor[1].setTanggal(tglSekarang);
+            }
+        } else {
+            Setor[0] = new HistorySetor();
+            Setor[0].setNominal(nominal);
+            Setor[0].setTanggal(tglSekarang);
+            Setor[1] = new HistorySetor();
+
+        }
+
+        currentDataNasabah.setHistorySetor(Setor);
+        double saldoBaru = currentDataNasabah.getSaldoNasabah() + nominal;
+        currentDataNasabah.setSaldoNasabah(saldoBaru);
+    }
+
+    static void ambilFunction() {
+        System.out.println("----- Ambil -----");
+        System.out.print("Masukkan nominal: ");
+        double nominal = scanner.nextDouble();
+
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+        LocalDateTime now = LocalDateTime.now();
+        String tglSekarang = dtf.format(now).toString();
+
+        HistoryAmbil Ambil[] = new HistoryAmbil[2];
+        if (currentDataNasabah.getHistoryAmbil() != null) {
+            if (currentDataNasabah.getHistoryAmbil()[0] == null) {
+                Ambil[0] = new HistoryAmbil();
+                Ambil[0].setNominal(nominal);
+                Ambil[0].setTanggal(tglSekarang);
+            } else {
+                Ambil[0] = new HistoryAmbil();
+                Ambil[0] = currentDataNasabah.getHistoryAmbil()[0];
+                Ambil[1] = new HistoryAmbil();
+                Ambil[1].setNominal(nominal);
+                Ambil[1].setTanggal(tglSekarang);
+            }
+        } else {
+            Ambil[0] = new HistoryAmbil();
+            Ambil[0].setNominal(nominal);
+            Ambil[0].setTanggal(tglSekarang);
+            Ambil[1] = new HistoryAmbil();
+
+        }
+
+        currentDataNasabah.setHistoryAmbil(Ambil);
+        double saldoBaru = currentDataNasabah.getSaldoNasabah() - nominal;
+        currentDataNasabah.setSaldoNasabah(saldoBaru);
     }
 
     public static void main(String[] args) {
-        DataNasabah dataNasabah = new DataNasabah();
-        Tabungan jenisTabungan = new Tabungan();
-        // ArrayList<DataNasabah> userList = new ArrayList<>();
-        ArrayList<Transfer> dTransfers = new ArrayList<Transfer>();
-        ArrayList<HistorySetor> historySetors = new ArrayList<HistorySetor>();
-        ArrayList<HistoryAmbil> historyAmbils = new ArrayList<HistoryAmbil>();
-        // dataNasabah.setJenisTabungan(jenisTabungan);
-        jenisTabungan.setJenisTabungan("Konvensional");
-        jenisTabungan.setBunga(3);
+        initializeArray();
+        initialSetup();
 
-        dataNasabah.setNama("Akhmad Ramadani");
-        dataNasabah.setAlamat("Jl. Polowijen");
-        dataNasabah.setJenisTabungan(jenisTabungan);
-        dataNasabah.setSaldo(100000);
-        dataNasabah.setdTransfers(dTransfers);
-        dataNasabah.setHistoryAmbils(historyAmbils);
-        dataNasabah.setHistorySetors(historySetors);
-        dataNasabah.setPin(123456);
-        dataNasabah.setNomorRekening(123456);
-
-        userList.add(dataNasabah);
-
-        int menu = 0;
         boolean exitApp = false;
         do {
-            pilihMenuAwal();
-            System.out.print("Pilih menu: ");
-            menu = scanner.nextInt();
-
+            int menu = initialMenu();
             switch (menu) {
                 case 1:
                     int counter = 0;
@@ -241,26 +382,20 @@ public class Main {
                     do {
                         loginStop = loginFunction() == null ? false : true;
                         counter += 1;
-                        // System.out.println(counter);
                     } while (!loginStop && counter <= 2);
                     if (loginStop) {
-                        menuSetelahLogin();
+                        menuAfterLogin();
                     }
                     break;
                 case 2:
-                    registerNasabah();
+                    registerFunction();
                     break;
-                case 3:
-                    tampilUser();
-                    break;
+
                 default:
                     exitApp = true;
                     break;
             }
         } while (!exitApp);
 
-        // System.out.println(currentDataNasabah.getNama());
-
-        // jenisTabungan.pilihJenisTabungan();
     }
 }
